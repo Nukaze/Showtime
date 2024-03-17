@@ -1,5 +1,6 @@
 # Miscellaneous
-**/*.lock
+*.lock
+pubspec.lock
 *.class
 *.log
 *.pyc
@@ -43,4 +44,3 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /showtime/pubspec.lock
-*.lock
