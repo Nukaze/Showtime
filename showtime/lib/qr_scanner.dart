@@ -15,10 +15,11 @@ class QrScanner extends StatefulWidget {
 
 class _QrScannerState extends State<QrScanner> {
   bool _isCameraActive = false;
+  bool _isFlashlightActive = false;
   String _scannedCode = '';
   MobileScannerController camController = MobileScannerController(
     autoStart: false,
-    torchEnabled: true,
+    torchEnabled: false,
     detectionSpeed: DetectionSpeed.normal,
   );
 
@@ -33,14 +34,20 @@ class _QrScannerState extends State<QrScanner> {
     if (barcode.raw == null) {
       return;
     }
-    camController.stop();
-    _scanTimer?.cancel();
+    dispose();
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => MovieContent(scannedCode: barcode.raw ?? "Not found"),
       ),
     );
+  }
+
+  void toggleFlashlight() async {
+    setState(() {
+      _isFlashlightActive = !_isFlashlightActive;
+    });
+    await camController.toggleTorch();
   }
 
   Future<void> scanQR() async {
@@ -50,7 +57,6 @@ class _QrScannerState extends State<QrScanner> {
     }
     if (_isCameraActive) {
       camController.start();
-
       _scanTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
         try {
           Barcode barcode = (await camController.analyzeImage(BarcodeFormat.qrCode as String)) as Barcode;
@@ -59,8 +65,7 @@ class _QrScannerState extends State<QrScanner> {
             setState(() {
               _scannedCode = barcode.rawValue!;
             });
-            _scanTimer?.cancel();
-            camController.stop();
+            dispose();
           }
         } catch (e) {
           // Handle potential camera errors
@@ -71,9 +76,32 @@ class _QrScannerState extends State<QrScanner> {
 
   @override
   void dispose() {
-    camController.dispose();
+    if (_isFlashlightActive) {
+      toggleFlashlight();
+    }
+    _isCameraActive = false;
     _scanTimer?.cancel();
+    camController.dispose();
     super.dispose();
+  }
+
+  Widget _cameraActionButton() {
+    return _isCameraActive
+        ? FloatingActionButton(
+            onPressed: () {
+              dispose();
+            },
+            child: const Icon(Icons.stop),
+          )
+        : ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _isCameraActive = true;
+                scanQR();
+              });
+            },
+            child: const Text('Scan QR Code'),
+          );
   }
 
   @override
@@ -81,6 +109,7 @@ class _QrScannerState extends State<QrScanner> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('QR Scanner'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -97,29 +126,13 @@ class _QrScannerState extends State<QrScanner> {
               onDetect: onDetected,
               fit: BoxFit.cover,
             ),
-            Visibility(
-              visible: !_isCameraActive,
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _isCameraActive = true;
-                    scanQR();
-                  });
-                },
-                child: const Text('Scan QR Code'),
-              ),
-            ),
+            _cameraActionButton(),
             Visibility(
               visible: _isCameraActive,
               child: FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    _isCameraActive = false;
-                    _scanTimer?.cancel(); // Stop scanning if timer was still running
-                    camController.stop();
-                  });
-                },
-                child: const Icon(Icons.stop),
+                onPressed: toggleFlashlight,
+                backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
+                child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
               ),
             ),
           ],
