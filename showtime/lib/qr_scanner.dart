@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart'; // Import the new library
-import 'movie_content.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'movie_content.dart';
 
 void main() => runApp(QrScanner());
 
@@ -11,74 +14,101 @@ class QrScanner extends StatefulWidget {
 }
 
 class _QrScannerState extends State<QrScanner> {
+  bool _isCameraActive = false;
   String _scannedCode = '';
-  MobileScannerController _cameraController = MobileScannerController(); // New controller
+  MobileScannerController camController = MobileScannerController(
+    autoStart: false,
+    torchEnabled: true,
+    detectionSpeed: DetectionSpeed.normal,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Timer? _scanTimer;
 
   Future<void> scanQR() async {
-    // Start the camera controller
-    bool isStarted = (await _cameraController.start()) as bool;
+    if (!await Permission.camera.request().isGranted) {
+      debugPrint("Camera permission not granted");
+      return;
+    }
+    if (_isCameraActive) {
+      camController.start();
 
-    if (isStarted) {
-      // Analyze frames continuously
-      try {
-        Barcode barcode = (await _cameraController.analyzeImage(BarcodeFormat.qrCode as String)) as Barcode;
+      _scanTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+        try {
+          Barcode barcode = (await camController.analyzeImage(BarcodeFormat.qrCode as String)) as Barcode;
 
-        if (barcode.rawValue != null) {
-          setState(() {
-            _scannedCode = barcode.rawValue!;
-          });
-          // ... Your navigation logic ...
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieContent(scannedCode: _scannedCode),
-            ),
-          );
+          if (barcode.rawValue != null) {
+            setState(() {
+              _scannedCode = barcode.rawValue!;
+            });
+            _scanTimer?.cancel();
+            camController.stop();
+          }
+        } catch (e) {
+          // Handle potential camera errors
         }
-      } catch (e) {
-        // Handle errors starting the scanner
-      }
-    } else {
-      // Handle errors starting the scanner
+      });
     }
   }
 
   @override
   void dispose() {
-    _cameraController.stop(); // Stop the controller when not in use
+    camController.dispose();
+    _scanTimer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // ... Your existing MaterialApp ...
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Scan QR Ticket'),
-        ),
-        body: Builder(
-          // Add a Builder to display the camera preview
-          builder: (context) {
-            return Stack(
-              children: [
-                MobileScanner(
-                    controller: _cameraController,
-                    fit: BoxFit.cover, // Adapt as needed
-                    onDetect: (barcode) {
-                      // ... Your navigation logic ...
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieContent(scannedCode: barcode.raw),
-                        ),
-                      );
-                    }),
-                // ... Your other UI elements ...
-              ],
-            );
-          },
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('QR Scanner'),
+      ),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          MobileScanner(
+            controller: camController,
+            onDetect: (barcode) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MovieContent(scannedCode: barcode.raw ?? "Not found"),
+                ),
+              );
+            },
+            fit: BoxFit.cover,
+          ),
+          Visibility(
+            visible: !_isCameraActive,
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _isCameraActive = true;
+                  scanQR();
+                });
+              },
+              child: const Text('Scan QR Code'),
+            ),
+          ),
+          Visibility(
+            visible: _isCameraActive,
+            child: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  _isCameraActive = false;
+                  _scanTimer?.cancel(); // Stop scanning if timer was still running
+                  camController.stop();
+                });
+              },
+              child: const Icon(Icons.stop),
+            ),
+          ),
+        ],
       ),
     );
   }
