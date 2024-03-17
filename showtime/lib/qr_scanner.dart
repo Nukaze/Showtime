@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -127,13 +128,22 @@ class _QrScannerState extends State<QrScanner> {
                 onDetect: onDetected,
                 fit: BoxFit.cover,
               ),
-              _cameraActionButton(),
-              Visibility(
-                visible: _isCameraActive,
-                child: FloatingActionButton(
-                  onPressed: toggleFlashlight,
-                  backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
-                  child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
+              Positioned(
+                bottom: 30, // Adjust spacing from bottom
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _cameraActionButton(),
+                    const SizedBox(width: 20),
+                    Visibility(
+                      visible: _isCameraActive,
+                      child: FloatingActionButton(
+                        onPressed: toggleFlashlight,
+                        backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
+                        child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
