@@ -6,6 +6,10 @@
       <excludeFolder url="file://$MODULE_DIR$/showtime/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/showtime/build" />
       <excludeFolder url="file://$MODULE_DIR$/showtime/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/showtime/android/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/showtime/linux/flutter/ephemeral" />
+      <excludeFolder url="file://$MODULE_DIR$/showtime/macos/Flutter/ephemeral" />
+      <excludeFolder url="file://$MODULE_DIR$/showtime/windows/flutter/ephemeral" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
