@@ -109,7 +109,7 @@ class _QrScannerState extends State<QrScanner> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('QR Scanner'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Colors.tealAccent,
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -118,24 +118,26 @@ class _QrScannerState extends State<QrScanner> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            MobileScanner(
-              controller: camController,
-              onDetect: onDetected,
-              fit: BoxFit.cover,
-            ),
-            _cameraActionButton(),
-            Visibility(
-              visible: _isCameraActive,
-              child: FloatingActionButton(
-                onPressed: toggleFlashlight,
-                backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
-                child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
+        child: SizedBox.expand(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              MobileScanner(
+                controller: camController,
+                onDetect: onDetected,
+                fit: BoxFit.cover,
               ),
-            ),
-          ],
+              _cameraActionButton(),
+              Visibility(
+                visible: _isCameraActive,
+                child: FloatingActionButton(
+                  onPressed: toggleFlashlight,
+                  backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
+                  child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
