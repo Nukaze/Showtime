@@ -29,6 +29,20 @@ class _QrScannerState extends State<QrScanner> {
 
   Timer? _scanTimer;
 
+  void onDetected(BarcodeCapture barcode) {
+    if (barcode.raw == null) {
+      return;
+    }
+    camController.stop();
+    _scanTimer?.cancel();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MovieContent(scannedCode: barcode.raw ?? "Not found"),
+      ),
+    );
+  }
+
   Future<void> scanQR() async {
     if (!await Permission.camera.request().isGranted) {
       debugPrint("Camera permission not granted");
@@ -68,47 +82,48 @@ class _QrScannerState extends State<QrScanner> {
       appBar: AppBar(
         title: const Text('QR Scanner'),
       ),
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          MobileScanner(
-            controller: camController,
-            onDetect: (barcode) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MovieContent(scannedCode: barcode.raw ?? "Not found"),
-                ),
-              );
-            },
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/showtime_bg.jpg'),
             fit: BoxFit.cover,
           ),
-          Visibility(
-            visible: !_isCameraActive,
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _isCameraActive = true;
-                  scanQR();
-                });
-              },
-              child: const Text('Scan QR Code'),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            MobileScanner(
+              controller: camController,
+              onDetect: onDetected,
+              fit: BoxFit.cover,
             ),
-          ),
-          Visibility(
-            visible: _isCameraActive,
-            child: FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  _isCameraActive = false;
-                  _scanTimer?.cancel(); // Stop scanning if timer was still running
-                  camController.stop();
-                });
-              },
-              child: const Icon(Icons.stop),
+            Visibility(
+              visible: !_isCameraActive,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _isCameraActive = true;
+                    scanQR();
+                  });
+                },
+                child: const Text('Scan QR Code'),
+              ),
             ),
-          ),
-        ],
+            Visibility(
+              visible: _isCameraActive,
+              child: FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    _isCameraActive = false;
+                    _scanTimer?.cancel(); // Stop scanning if timer was still running
+                    camController.stop();
+                  });
+                },
+                child: const Icon(Icons.stop),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
