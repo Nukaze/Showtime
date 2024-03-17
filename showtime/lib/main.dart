@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'qr_scanner.dart';
 import 'movie_content.dart';
+import 'splashscreen.dart';
 
 
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // home: const MyHomePage(title: 'Showtime'),
-      home: QrScanner(),
+      home: const SplashScreen(),
     );
   }
 }
