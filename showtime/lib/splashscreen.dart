@@ -49,26 +49,39 @@ class _SplashScreenState extends State<SplashScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: [
-            Text(
-              displayText,
-              style: const TextStyle(
+            Center(
+              child: Text(
+                displayText,
+                style: const TextStyle(
                   fontSize: 56,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Georgia',
-                  fontStyle: FontStyle.italic),
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
             ),
-            // const CircularProgressIndicator(
-            //   color: Colors.white,
-            //   strokeCap: StrokeCap.butt,
-            //   strokeWidth: 8,
-            // ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: const Text(
+                  "Powered by\nEverySaturdayFreePopcorn",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.tealAccent,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'Georgia',
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
+            ),
           ],
-        )),
+        ),
       ),
     );
   }
