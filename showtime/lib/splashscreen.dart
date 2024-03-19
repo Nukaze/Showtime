@@ -12,8 +12,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   static const String brandName = "Showtime";
   String displayText = "";
-  static const int _waitingTextTime = 1000;
-  static const int _animationTime = 180;
+  static const int _waitingTextTime = 800;
+  static const int _animationTime = 140;
 
   Future<void> performBrandingAnimation() async {
     Future.delayed(const Duration(milliseconds: _waitingTextTime), () {
