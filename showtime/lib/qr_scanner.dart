@@ -36,12 +36,7 @@ class _QrScannerState extends State<QrScanner> {
       return;
     }
     dispose();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MovieContent(scannedCode: barcode.raw ?? "Not found"),
-      ),
-    );
+    return;
   }
 
   void toggleFlashlight() async {
@@ -51,7 +46,7 @@ class _QrScannerState extends State<QrScanner> {
     await camController.toggleTorch();
   }
 
-  Future<void> scanQR() async {
+  Future<void> startScanner() async {
     if (!await Permission.camera.request().isGranted) {
       debugPrint("Camera permission not granted");
       return;
@@ -75,14 +70,30 @@ class _QrScannerState extends State<QrScanner> {
     }
   }
 
+  Future<void> stopScanner() async {
+    if (_isCameraActive) {
+      await camController.stop();
+      setState(() {
+        _isCameraActive = false;
+      });
+      _scanTimer?.cancel();
+    }
+  }
+
+  Future<void> toggleScanner() async {
+    if (_isCameraActive) {
+      await stopScanner();
+    } else {
+      await startScanner();
+    }
+  }
+
   @override
   void dispose() {
     if (_isFlashlightActive) {
       toggleFlashlight();
     }
-    _isCameraActive = false;
-    _scanTimer?.cancel();
-    camController.dispose();
+    stopScanner();
     super.dispose();
   }
 
@@ -98,7 +109,7 @@ class _QrScannerState extends State<QrScanner> {
             onPressed: () {
               setState(() {
                 _isCameraActive = true;
-                scanQR();
+                startScanner();
               });
             },
             child: const Text('Scan QR Code'),
