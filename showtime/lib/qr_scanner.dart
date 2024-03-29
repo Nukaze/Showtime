@@ -158,46 +158,48 @@ class _QrScannerState extends State<QrScanner> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('QR Scanner'),
-        backgroundColor: Colors.tealAccent,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/showtime_bg.jpg'),
-            fit: BoxFit.cover,
-          ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('QR Scanner'),
+          backgroundColor: Colors.tealAccent,
         ),
-        child: SizedBox.expand(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              MobileScanner(
-                controller: camController,
-                onDetect: onDetected,
-                fit: BoxFit.cover,
-              ),
-              Positioned(
-                bottom: 30, // Adjust spacing from bottom
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _cameraActionButton(),
-                    const SizedBox(width: 20),
-                    Visibility(
-                      visible: _isCameraActive,
-                      child: FloatingActionButton(
-                        onPressed: toggleFlashlight,
-                        backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
-                        child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
-                      ),
-                    ),
-                  ],
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/showtime_bg.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: SizedBox.expand(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                MobileScanner(
+                  controller: camController,
+                  onDetect: onDetected,
+                  fit: BoxFit.cover,
                 ),
-              ),
-            ],
+                Positioned(
+                  bottom: 30, // Adjust spacing from bottom
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _cameraActionButton(),
+                      const SizedBox(width: 20),
+                      Visibility(
+                        visible: _isCameraActive,
+                        child: FloatingActionButton(
+                          onPressed: toggleFlashlight,
+                          backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
+                          child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
