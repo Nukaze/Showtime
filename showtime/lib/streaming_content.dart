@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -22,6 +23,9 @@ class _StreamingContentState extends State<StreamingContent> {
   late final dynamic _endTimeInSeconds;
 
   Size aspectRatio = Size(16, 9);
+  late String _videoTitle;
+  String _infoText = "Loading...";
+  late YoutubeMetaData _metaData;
 
   @override
   void initState() {
@@ -31,17 +35,13 @@ class _StreamingContentState extends State<StreamingContent> {
       params: const YoutubePlayerParams(
         showControls: true,
         showFullscreenButton: true,
-        mute: false,
-        color: 'red',
-        loop: false,
         playsInline: false,
+        mute: false,
+        loop: false,
+        color: 'red',
         strictRelatedVideos: true,
       ),
     );
-
-    _controller.setFullScreenListener((isFullScreen) {
-      debugPrint('The player is ${isFullScreen ? 'fullscreen' : 'not fullscreen'}');
-    });
 
     // actual production
     // int maxStartTimeItShouldbe = _controller.metadata.duration.inSeconds.toInt() - _requiredDurationInSeconds.toInt();
@@ -54,6 +54,28 @@ class _StreamingContentState extends State<StreamingContent> {
       videoId: "WOZfIgBR84Y", // dev mode
       startSeconds: _startTimeInSeconds.toDouble(),
       endSeconds: _endTimeInSeconds.toDouble(),
+    );
+
+    _controller.setFullScreenListener((isFullScreen) {
+      debugPrint('The player is ${isFullScreen ? 'fullscreen' : 'not fullscreen'}');
+    });
+
+    Future.delayed(
+      const Duration(milliseconds: 3000),
+      () => {
+        setState(() {
+          _metaData = _controller.metadata;
+          _videoTitle = _metaData.title;
+          String dur = _metaData.duration.toString();
+          if (_controller.metadata.title == null || _controller.metadata.title.isEmpty) {
+            _videoTitle = "not available right now.";
+          }
+          if (_controller.metadata.duration.toString().isEmpty) {
+            dur = "not available right now.";
+          }
+          _infoText = "Title: $_videoTitle\nDuration: $dur";
+        })
+      },
     );
   }
 
@@ -86,6 +108,20 @@ class _StreamingContentState extends State<StreamingContent> {
                       controller: _controller,
                       aspectRatio: aspectRatio.width / aspectRatio.height,
                       backgroundColor: Colors.red,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 230,
+                  child: Container(
+                    color: Colors.black.withOpacity(0.5), // Adding a background color for better visibility
+                    padding: const EdgeInsets.all(16),
+                    child: Text(
+                      _infoText,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
