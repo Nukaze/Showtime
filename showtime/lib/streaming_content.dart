@@ -21,6 +21,8 @@ class _StreamingContentState extends State<StreamingContent> {
   late final dynamic _startTimeInSeconds;
   late final dynamic _endTimeInSeconds;
 
+  Size aspectRatio = Size(16, 9);
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +34,7 @@ class _StreamingContentState extends State<StreamingContent> {
         mute: false,
         color: 'red',
         loop: false,
-        playsInline: true,
+        playsInline: false,
         strictRelatedVideos: true,
       ),
     );
@@ -48,7 +50,8 @@ class _StreamingContentState extends State<StreamingContent> {
     _startTimeInSeconds = randomNumber(0, maxStartTimeItShouldbe);
     _endTimeInSeconds = _startTimeInSeconds + _requiredDurationInSeconds;
     _controller.loadVideoById(
-      videoId: widget.videoId,
+      // videoId: widget.videoId ?? "WOZfIgBR84Y",  // production
+      videoId: "WOZfIgBR84Y", // dev mode
       startSeconds: _startTimeInSeconds.toDouble(),
       endSeconds: _endTimeInSeconds.toDouble(),
     );
@@ -62,13 +65,33 @@ class _StreamingContentState extends State<StreamingContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: YoutubePlayerControllerProvider(
-        controller: _controller,
-        child: YoutubePlayer(
-          controller: _controller,
-          aspectRatio: 16 / 9,
-          backgroundColor: Colors.red,
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/showtime_bg.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: SizedBox.expand(
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(0), // Adjust top margin as needed
+                  child: YoutubePlayerControllerProvider(
+                    controller: _controller,
+                    child: YoutubePlayer(
+                      controller: _controller,
+                      aspectRatio: aspectRatio.width / aspectRatio.height,
+                      backgroundColor: Colors.red,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
