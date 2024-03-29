@@ -25,22 +25,40 @@ class _QrScannerState extends State<QrScanner> {
     detectionSpeed: DetectionSpeed.normal,
   );
 
+  Timer? _scanTimer;
+
+  bool isDetected = false;
+
   @override
   void initState() {
     super.initState();
   }
 
-  Timer? _scanTimer;
+  @override
+  void dispose() {
+    setState(() {
+      isDetected = true;
+    });
+    if (_isFlashlightActive) {
+      toggleFlashlight();
+    }
+    stopScanner();
+    super.dispose();
+  }
 
   void onDetected(BarcodeCapture barcode) {
-    // alertDialog(context, "QR Detected", "Scanned code: ${barcode.raw}");
-    debugPrint("\n\n\n\nScanned code: ${barcode.raw}\nEnd of scan detected\n\n\n\n");
-
     if (barcode.raw == null) {
       alertDialog(context, "QR Detected", "Invalid QR code");
+      debugPrint("\n\n\n\ invalid qrcode \n\n\n\n");
       return;
     }
-
+    if (isDetected) {
+      return;
+    }
+    setState(() {
+      isDetected = true;
+    });
+    debugPrint("\n\n\n\nScanned code: ${barcode.raw}\nEnd of scan detected\n\n\n\n");
     var data = barcode.raw[0];
 
     const String videoId = "WOZfIgBR84Y";
@@ -52,6 +70,11 @@ class _QrScannerState extends State<QrScanner> {
       "${data}",
       acceptText: "Watch $videoName",
       onAccept: () => goToStreamingContent(videoId),
+      onCancel: () {
+        setState(() {
+          isDetected = false;
+        });
+      },
     );
   }
 
@@ -112,15 +135,6 @@ class _QrScannerState extends State<QrScanner> {
     } else {
       await startScanner();
     }
-  }
-
-  @override
-  void dispose() {
-    if (_isFlashlightActive) {
-      toggleFlashlight();
-    }
-    stopScanner();
-    super.dispose();
   }
 
   Widget _cameraActionButton() {
