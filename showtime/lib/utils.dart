@@ -25,14 +25,14 @@ void alertDialog(BuildContext context, String title, String message,
 }
 
 int randomNumber(int? min, int? max) {
+  final rand = Random();
   if (min == null && max == null) {
-    return Random().nextInt(100);
+    return rand.nextInt(100);
   }
 
   if (min == null || max == null) {
     return throw ArgumentError('Both min and max must be provided');
   }
 
-  final rand = Random();
   return min + rand.nextInt(max - min + 1);
 }
