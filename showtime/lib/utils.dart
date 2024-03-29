@@ -1,14 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-
-void alertDialog(
-    BuildContext context, String title, String message,
-    { String acceptText = "Ok",
-      String cancelText = "Cancel",
-      VoidCallback? onAccept,
-      VoidCallback? onCancel
-    }) {
-
+void alertDialog(BuildContext context, String title, String message,
+    {String acceptText = "Ok", String cancelText = "Cancel", VoidCallback? onAccept, VoidCallback? onCancel}) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -26,8 +21,18 @@ void alertDialog(
             ),
           ],
         );
-      }
-  );
+      });
+}
 
+int randomNumber(int? min, int? max) {
+  if (min == null && max == null) {
+    return Random().nextInt(100);
+  }
 
+  if (min == null || max == null) {
+    return throw ArgumentError('Both min and max must be provided');
+  }
+
+  final rand = Random();
+  return min + rand.nextInt(max - min + 1);
 }
