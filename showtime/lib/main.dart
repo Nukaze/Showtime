@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'qr_scanner.dart';
-import 'movie_content.dart';
 import 'splashscreen.dart';
 
 void main() {
@@ -22,7 +21,8 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
       routes: {
         '/SplashScreen': (context) => const SplashScreen(),
-        '/QrScanner': (context) => QrScanner(),
+        '/QrScanner': (context) => const QrScanner(),
+
         // '/MovieContent': (context, _scannedCode) => MovieContent(scannedCode: _scannedCode),
       },
     );
