@@ -45,12 +45,12 @@ class _StreamingContentState extends State<StreamingContent> {
     // int maxStartTimeItShouldbe = _controller.metadata.duration.inSeconds.toInt() - _requiredDurationInSeconds.toInt();
     // dev mode
     int maxStartTimeItShouldbe = (_controller.metadata.duration.inSeconds.toInt() * 0.8).toInt();
-    _startTimeInSeconds = randomNumber(0, _controller.metadata.duration.inSeconds.toInt());
+    _startTimeInSeconds = randomNumber(0, maxStartTimeItShouldbe);
     _endTimeInSeconds = _startTimeInSeconds + _requiredDurationInSeconds;
     _controller.loadVideoById(
       videoId: widget.videoId,
-      startSeconds: _startTimeInSeconds,
-      endSeconds: _endTimeInSeconds,
+      startSeconds: _startTimeInSeconds.toDouble(),
+      endSeconds: _endTimeInSeconds.toDouble(),
     );
   }
 
