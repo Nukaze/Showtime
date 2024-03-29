@@ -1,15 +1,16 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:showtime/streaming_content.dart';
+import 'package:showtime/utils.dart';
 
-import 'movie_content.dart';
-
-void main() => runApp(QrScanner());
+void main() => runApp(const QrScanner());
 
 class QrScanner extends StatefulWidget {
+  const QrScanner({super.key});
+
   @override
   _QrScannerState createState() => _QrScannerState();
 }
@@ -32,11 +33,36 @@ class _QrScannerState extends State<QrScanner> {
   Timer? _scanTimer;
 
   void onDetected(BarcodeCapture barcode) {
+    // alertDialog(context, "QR Detected", "Scanned code: ${barcode.raw}");
+    debugPrint("\n\n\n\nScanned code: ${barcode.raw}\nEnd of scan detected\n\n\n\n");
+
     if (barcode.raw == null) {
+      alertDialog(context, "QR Detected", "Invalid QR code");
       return;
     }
+
+    var data = barcode.raw[0];
+
+    const String videoId = "WOZfIgBR84Y";
+    const String videoName = "Dune 2";
+
+    return alertDialog(
+      context,
+      "QR Detected",
+      "${data}",
+      acceptText: "Watch $videoName",
+      onAccept: () => goToStreamingContent(videoId),
+    );
+  }
+
+  void goToStreamingContent(String videoId) {
     dispose();
-    return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StreamingContent(videoId: videoId),
+      ),
+    );
   }
 
   void toggleFlashlight() async {
