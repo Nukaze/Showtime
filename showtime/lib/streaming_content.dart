@@ -73,7 +73,13 @@ class _StreamingContentState extends State<StreamingContent> {
           if (_controller.metadata.duration.toString().isEmpty) {
             dur = "not available right now.";
           }
+
           _infoText = "Title: $_videoTitle\nDuration: $dur";
+
+          Future.delayed(Duration(milliseconds: 1500), () {
+            _videoTitle = "Dune 2";
+            _infoText = "Title: $_videoTitle\nDuration: $dur";
+          });
         })
       },
     );
