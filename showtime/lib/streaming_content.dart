@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:showtime/struct_class.dart';
 import 'package:showtime/utils.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class StreamingContent extends StatefulWidget {
   final String videoId;
@@ -25,7 +27,7 @@ class _StreamingContentState extends State<StreamingContent> {
   Size aspectRatio = Size(16, 9);
   late String _videoTitle;
   String _infoText = "Loading...";
-  late YoutubeMetaData _metaData;
+  late MetaDataResponse _metaData;
 
   @override
   void initState() {
@@ -63,26 +65,44 @@ class _StreamingContentState extends State<StreamingContent> {
     Future.delayed(
       const Duration(milliseconds: 3000),
       () => {
-        setState(() {
-          _metaData = _controller.metadata;
-          _videoTitle = _metaData.title;
-          String dur = _metaData.duration.toString();
-          if (_controller.metadata.title == null || _controller.metadata.title.isEmpty) {
+        setState(() async {
+          _metaData = (await fetchYoutubeMetadata(widget.videoId))!;
+          _videoTitle = _metaData.items[0].snippet.title;
+          String channelName = _metaData.items[0].snippet.channelTitle;
+          if (_videoTitle.isEmpty) {
             _videoTitle = "not available right now.";
           }
-          if (_controller.metadata.duration.toString().isEmpty) {
-            dur = "not available right now.";
+          if (channelName.isEmpty) {
+            channelName = "not available right now.";
           }
-
-          _infoText = "Title: $_videoTitle\nDuration: $dur";
-
-          Future.delayed(Duration(milliseconds: 1500), () {
-            _videoTitle = "Dune 2";
-            _infoText = "Title: $_videoTitle\nDuration: $dur";
+          setState(() {
+            _infoText = "Title: $_videoTitle\nPublisher: $channelName";
           });
         })
       },
     );
+  }
+
+  Future<MetaDataResponse?> fetchYoutubeMetadata(String videoId) async {
+    if (videoId.isEmpty) {
+      throw ArgumentError('videoId cannot be empty');
+    }
+
+    const String apiKey = "AIzaSyDtRcryAopzK84mYu9vi5Ap5rCKkzO30JA";
+    try {
+      final response = await http.get(Uri.parse(
+          "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=$videoId&key=$apiKey"));
+      if (response.statusCode == 200) {
+        debugPrint("\n\n\n\n\n\n#Response: ${response.body}\n\n\n\n\n\n\n\n\n");
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return MetaDataResponse.fromJson(jsonResponse);
+      } else {
+        throw Exception('Failed to load metadata');
+      }
+    } catch (e) {
+      debugPrint("Error: $e");
+      return null;
+    }
   }
 
   @override
