@@ -80,16 +80,21 @@ class _QrScannerState extends State<QrScanner> {
         setState(() {
           isDetected = false;
         });
+        return;
       },
     );
   }
 
   void goToStreamingContent(String videoId) {
     dispose();
-    Navigator.push(
+    Navigator.pop(context);
+    Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (context) => StreamingContent(videoId: videoId),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => StreamingContent(videoId: videoId),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return child; // No transition animation
+        },
       ),
     );
   }
@@ -147,7 +152,9 @@ class _QrScannerState extends State<QrScanner> {
     return _isCameraActive
         ? FloatingActionButton(
             onPressed: () {
-              dispose();
+              // dispose();
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/QrScanner');
             },
             child: const Icon(Icons.stop),
           )
@@ -174,10 +181,6 @@ class _QrScannerState extends State<QrScanner> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: CustomNavBar(
-          initialIndex: _selectedIndex,
-          onItemSelected: _onItemSelected,
-        ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -215,6 +218,10 @@ class _QrScannerState extends State<QrScanner> {
               ],
             ),
           ),
+        ),
+        bottomNavigationBar: CustomNavBar(
+          initialIndex: _selectedIndex,
+          onItemSelected: _onItemSelected,
         ),
       ),
     );
