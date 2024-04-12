@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:showtime/qr_scanner.dart';
 import 'package:showtime/streaming_content.dart';
 import 'package:showtime/utils.dart';
 
@@ -66,35 +67,48 @@ class _CustomNavBarState extends State<CustomNavBar> {
           'Go to Scanner.',
         );
         Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, '/QrScanner');
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => const QrScanner(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return child; // No transition animation
+            },
+          ),
+        );
+
         break;
+
       case 1:
         Navigator.pop(context);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => StreamingContent(videoId: Global().videoId!),
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => StreamingContent(videoId: Global().videoId!),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return child; // No transition animation
+            },
           ),
         );
         break;
+
       case 2:
         alertDialog(
           context,
           'Shopping',
           'This feature is not yet implemented.',
         );
-        return;
-        Navigator.pushReplacementNamed(context, '/Shopping');
         break;
+        Navigator.pushReplacementNamed(context, '/Shopping');
+
       case 3:
         alertDialog(
           context,
           'Profile',
           'This feature is not yet implemented.',
         );
-        return;
-        Navigator.pushReplacementNamed(context, '/Profile');
         break;
+        Navigator.pushReplacementNamed(context, '/Profile');
     }
   }
 
@@ -103,25 +117,35 @@ class _CustomNavBarState extends State<CustomNavBar> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.qr_code_scanner),
+          icon: Icon(Icons.qr_code_scanner_outlined),
+          activeIcon: Icon(Icons.qr_code_scanner),
           label: 'Scanner',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.movie_filter),
+          icon: Icon(Icons.movie_filter_outlined),
+          activeIcon: Icon(Icons.movie_filter),
           label: 'Streaming',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_basket),
+          icon: Icon(Icons.shopping_basket_outlined),
+          activeIcon: Icon(Icons.shopping_basket),
           label: 'Shopping',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
+          icon: Icon(Icons.account_circle_outlined),
+          activeIcon: Icon(Icons.account_circle),
           label: 'Profile',
         ),
       ],
       currentIndex: _currentIndex,
+      unselectedItemColor: Colors.blueGrey,
+      unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),
+      unselectedIconTheme: const IconThemeData(color: Colors.blueGrey),
+      showUnselectedLabels: true,
       selectedItemColor: Colors.red,
-      backgroundColor: Colors.deepPurple,
+      selectedIconTheme: const IconThemeData(color: Colors.red),
+      showSelectedLabels: true,
+      backgroundColor: Colors.cyan,
       onTap: _onTap,
     );
   }
