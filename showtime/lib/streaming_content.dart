@@ -263,9 +263,9 @@ class _StreamingContentState extends State<StreamingContent> {
     );
   }
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
-  void _onNavBarItemTapped(int index) {
+  void _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -295,7 +295,7 @@ class _StreamingContentState extends State<StreamingContent> {
         ),
         bottomNavigationBar: CustomNavBar(
           initialIndex: _selectedIndex,
-          onItemSelected: _onNavBarItemTapped,
+          onItemSelected: _onItemSelected,
         ),
       ),
     );
