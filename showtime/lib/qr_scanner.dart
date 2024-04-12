@@ -66,8 +66,9 @@ class _QrScannerState extends State<QrScanner> {
 
     return alertDialog(
       context,
-      "QR Detected",
-      "${data}",
+      "QR Movie Detected",
+      // "${data}",
+      "Watch $videoName from Major Cineplex?",
       acceptText: "Watch $videoName",
       onAccept: () => goToStreamingContent(videoId),
       onCancel: () {
