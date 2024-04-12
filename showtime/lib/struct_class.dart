@@ -1,3 +1,25 @@
+class MovieMockupMetaData {
+  String title;
+  String genre;
+  String seat;
+  String theatreBranch;
+  int theatreNumber;
+  int duration; // duration in minutes
+  String date;
+  String time;
+
+  MovieMockupMetaData({
+    this.title = "not available right now.",
+    this.genre = "not available right now.",
+    this.seat = "not available right now.",
+    this.theatreBranch = "not available right now.",
+    this.theatreNumber = 0,
+    this.duration = 0,
+    this.date = "not available right now.",
+    this.time = "not available right now.",
+  });
+}
+
 class MetaDataResponse {
   final String kind;
   final String etag;
