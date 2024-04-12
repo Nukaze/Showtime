@@ -142,8 +142,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
       unselectedLabelStyle: const TextStyle(color: Colors.blueGrey),
       unselectedIconTheme: const IconThemeData(color: Colors.blueGrey),
       showUnselectedLabels: true,
-      selectedItemColor: Colors.red,
-      selectedIconTheme: const IconThemeData(color: Colors.red),
+      // fixedColor is both of selectedItemColor, selectedIconTheme
+      fixedColor: [Colors.amber, Colors.red, Colors.teal.shade300, Colors.deepPurpleAccent][_currentIndex],
       showSelectedLabels: true,
       backgroundColor: Colors.cyan,
       onTap: _onTap,
