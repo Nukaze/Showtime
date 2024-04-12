@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Georgia',
       ),
-      // home: const SplashScreen(),
+      home: const QrScanner(),
       initialRoute: '/SplashScreen',
       routes: {
         '/SplashScreen': (context) => const SplashScreen(),
