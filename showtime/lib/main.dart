@@ -6,10 +6,25 @@ void main() {
   runApp(const MyApp());
 }
 
+class Global {
+  static Global? _instance;
+  String? videoId;
+  int? currentIndex;
+
+  factory Global() {
+    _instance ??= Global._();
+    return _instance!;
+  }
+
+  Global._();
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
+  final String videoId = "WOZfIgBR84Y";
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,12 +34,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Georgia',
       ),
-      home: const SplashScreen(),
+      // home: const SplashScreen(),
+      initialRoute: '/SplashScreen',
       routes: {
         '/SplashScreen': (context) => const SplashScreen(),
         '/QrScanner': (context) => const QrScanner(),
-
-        // '/MovieContent': (context, _scannedCode) => MovieContent(scannedCode: _scannedCode),
+        '/Shopping': (context) => Container(),
+        '/Profile': (context) => Container(),
       },
     );
   }
