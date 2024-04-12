@@ -11,12 +11,12 @@ class MovieMockupMetaData {
   MovieMockupMetaData({
     this.title = "not available right now.",
     this.genre = "not available right now.",
-    this.seat = "not available right now.",
-    this.theatreBranch = "not available right now.",
+    this.seat = r"n\a",
+    this.theatreBranch = r"n\a",
     this.theatreNumber = 0,
     this.duration = 0,
-    this.date = "not available right now.",
-    this.time = "not available right now.",
+    this.date = r"n\a",
+    this.time = r"n\a",
   });
 }
 
