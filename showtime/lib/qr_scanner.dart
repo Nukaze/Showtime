@@ -3,8 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:showtime/custom_navbar.dart';
 import 'package:showtime/streaming_content.dart';
 import 'package:showtime/utils.dart';
+
+import 'main.dart';
 
 void main() => runApp(const QrScanner());
 
@@ -55,14 +58,16 @@ class _QrScannerState extends State<QrScanner> {
     if (isDetected) {
       return;
     }
-    setState(() {
-      isDetected = true;
-    });
-    debugPrint("\n\n\n\nScanned code: ${barcode.raw}\nEnd of scan detected\n\n\n\n");
     var data = barcode.raw[0];
 
     const String videoId = "WOZfIgBR84Y";
     const String videoName = "Dune 2";
+
+    setState(() {
+      isDetected = true;
+      Global().videoId = videoId;
+    });
+    debugPrint("\n\n\n\nScanned code: ${barcode.raw}\nEnd of scan detected\n\n\n\n");
 
     return alertDialog(
       context,
@@ -157,13 +162,21 @@ class _QrScannerState extends State<QrScanner> {
           );
   }
 
+  int _selectedIndex = 0;
+
+  void _onItemSelected(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('QR Scanner'),
-          backgroundColor: Colors.tealAccent,
+        bottomNavigationBar: CustomNavBar(
+          initialIndex: _selectedIndex,
+          onItemSelected: _onItemSelected,
         ),
         body: Container(
           decoration: const BoxDecoration(
