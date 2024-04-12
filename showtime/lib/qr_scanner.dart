@@ -88,6 +88,7 @@ class _QrScannerState extends State<QrScanner> {
   void goToStreamingContent(String videoId) {
     dispose();
     Navigator.pop(context);
+    // no trasition animation
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
@@ -152,7 +153,7 @@ class _QrScannerState extends State<QrScanner> {
     return _isCameraActive
         ? FloatingActionButton(
             onPressed: () {
-              // dispose();
+              dispose();
               Navigator.pop(context);
               Navigator.pushNamed(context, '/QrScanner');
             },
