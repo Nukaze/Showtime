@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:showtime/struct_class.dart';
@@ -31,6 +32,9 @@ class _StreamingContentState extends State<StreamingContent> {
   // Mock up metadata for testing
   MovieMockupMetaData movie = MovieMockupMetaData();
 
+  late double screenWidth;
+  late double screenHeight;
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +62,6 @@ class _StreamingContentState extends State<StreamingContent> {
     _startTimeInSeconds = randomNumber(0, maxStartTimeItShouldbe);
     _endTimeInSeconds = _startTimeInSeconds + _requiredDurationInSeconds;
     _controller.loadVideoById(
-      // videoId: widget.videoId ?? "WOZfIgBR84Y",  // production
       videoId: "WOZfIgBR84Y", // dev mode
       startSeconds: _startTimeInSeconds.toDouble(),
       endSeconds: _endTimeInSeconds.toDouble(),
@@ -83,15 +86,27 @@ class _StreamingContentState extends State<StreamingContent> {
           }
 
           setState(() {
+            String date = DateTime.now().toString().split(" ")[0];
+            DateTime parsedDate = DateTime.parse(date); // Parse the date string
+            String formattedDate = DateFormat('dd MMMM yyyy').format(parsedDate); // Format the parsed date
+
+            String time = DateTime.now().toString().split(" ")[1];
+            String timeHour = time.split(":")[0];
+            int? timeMinute = int.tryParse(time.split(":")[1]);
+            timeMinute ??= 0;
+            String formattedMinute = (timeMinute > 30) ? "30" : "00";
+            String formattedTime = "$timeHour:$formattedMinute";
+
             movie = MovieMockupMetaData(
               title: "Dune 2",
               genre: "Sci-fi / Adventure",
-              seat: "A1",
-              theatreBranch: "Bangkok University",
+              seat: "A10",
+              // theatreBranch: "Bangkok University",
+              theatreBranch: "Future Park Rungsit",
               theatreNumber: randomNumber(1, 16),
               duration: 166,
-              date: DateTime.now().toString().split(" ")[0],
-              time: DateTime.now().toString().split(" ")[1],
+              date: formattedDate,
+              time: formattedTime,
             );
           });
         })
@@ -127,6 +142,97 @@ class _StreamingContentState extends State<StreamingContent> {
     super.dispose();
   }
 
+  Widget _buildYoutubePlayer() {
+    return Padding(
+      padding: const EdgeInsets.all(0), // Adjust top margin as needed
+      child: YoutubePlayerControllerProvider(
+        controller: _controller,
+        child: YoutubePlayer(
+          controller: _controller,
+          aspectRatio: aspectRatio.width / aspectRatio.height,
+          backgroundColor: Colors.red,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMovieInfo() {
+    const double _titleFontSize = 40.0;
+    const double _subTitleFontSize = 18.0;
+    const double _fontSize = 16.0;
+    const double _blankSpace = 10.0;
+
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
+
+    // Calculate the percentage values for width, height, and padding
+    final containerWidth = screenWidth * 0.85; // 85% of screen width
+    final containerHeight = screenHeight * 0.3; // 50% of screen height
+    final containerPadding = EdgeInsets.all(screenWidth * 0.05); // 5% of screen width as padding
+
+    return Positioned(
+      top: screenHeight * 0.3,
+      width: containerWidth,
+      // height: containerHeight,
+      child: Container(
+        color: Colors.black.withOpacity(0.5), // Adding a background color for better visibility
+        padding: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildText("Now Streaming", _fontSize, color: Colors.greenAccent, fontWeight: FontWeight.bold),
+              _buildText(movie.title, _titleFontSize, fontWeight: FontWeight.bold),
+              _buildText(movie.genre, _fontSize, color: Colors.grey),
+              const SizedBox(height: 30.0),
+              _buildText(movie.theatreBranch, _fontSize),
+              const SizedBox(height: 10.0),
+              // _buildDateAndTimeRow(movie.date, movie.time),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildText("Date", _fontSize),
+                      _buildText(movie.date, _fontSize, color: Colors.grey),
+                      _buildText("", _blankSpace),
+                      _buildText("Theatre Number", _fontSize),
+                      _buildText(movie.theatreNumber.toString(), _fontSize, color: Colors.grey),
+                    ],
+                  ),
+                  const SizedBox(width: 60.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildText("Time", _fontSize),
+                      _buildText(movie.time, _fontSize, color: Colors.grey),
+                      _buildText("", _blankSpace),
+                      _buildText("Seat", _fontSize),
+                      _buildText(movie.seat, _fontSize, color: Colors.grey),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildText(String text, double fontSize, {Color? color, FontWeight? fontWeight}) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: color ?? Colors.white,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -142,47 +248,8 @@ class _StreamingContentState extends State<StreamingContent> {
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(0), // Adjust top margin as needed
-                  child: YoutubePlayerControllerProvider(
-                    controller: _controller,
-                    child: YoutubePlayer(
-                      controller: _controller,
-                      aspectRatio: aspectRatio.width / aspectRatio.height,
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 230,
-                  child: Container(
-                    color: Colors.black.withOpacity(0.5), // Adding a background color for better visibility
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(movie.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        Text(movie.genre,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            )),
-                        Text(
-                          movie.theatreBranch,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                _buildYoutubePlayer(),
+                _buildMovieInfo(),
               ],
             ),
           ),
