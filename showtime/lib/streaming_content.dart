@@ -156,6 +156,17 @@ class _StreamingContentState extends State<StreamingContent> {
     );
   }
 
+  Widget _buildText(String text, double fontSize, {Color? color, FontWeight? fontWeight}) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: color ?? Colors.white,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+    );
+  }
+
   Widget _buildMovieInfo() {
     const double _titleFontSize = 40.0;
     const double _subTitleFontSize = 18.0;
@@ -170,6 +181,7 @@ class _StreamingContentState extends State<StreamingContent> {
     final containerHeight = screenHeight * 0.3; // 50% of screen height
     final containerPadding = EdgeInsets.all(screenWidth * 0.05); // 5% of screen width as padding
 
+    Color? colorInfo = Colors.grey.shade500 as Color?;
     return Positioned(
       top: screenHeight * 0.3,
       width: containerWidth,
@@ -184,7 +196,7 @@ class _StreamingContentState extends State<StreamingContent> {
             children: [
               _buildText("Now Streaming", _fontSize, color: Colors.greenAccent, fontWeight: FontWeight.bold),
               _buildText(movie.title, _titleFontSize, fontWeight: FontWeight.bold),
-              _buildText(movie.genre, _fontSize, color: Colors.grey),
+              _buildText(movie.genre, _fontSize, color: colorInfo),
               const SizedBox(height: 30.0),
               _buildText(movie.theatreBranch, _fontSize),
               const SizedBox(height: 10.0),
@@ -196,10 +208,10 @@ class _StreamingContentState extends State<StreamingContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildText("Date", _fontSize),
-                      _buildText(movie.date, _fontSize, color: Colors.grey),
+                      _buildText(movie.date, _fontSize, color: colorInfo),
                       _buildText("", _blankSpace),
                       _buildText("Theatre Number", _fontSize),
-                      _buildText(movie.theatreNumber.toString(), _fontSize, color: Colors.grey),
+                      _buildText(movie.theatreNumber.toString(), _fontSize, color: colorInfo),
                     ],
                   ),
                   const SizedBox(width: 60.0),
@@ -207,10 +219,10 @@ class _StreamingContentState extends State<StreamingContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildText("Time", _fontSize),
-                      _buildText(movie.time, _fontSize, color: Colors.grey),
+                      _buildText(movie.time, _fontSize, color: colorInfo),
                       _buildText("", _blankSpace),
                       _buildText("Seat", _fontSize),
-                      _buildText(movie.seat, _fontSize, color: Colors.grey),
+                      _buildText(movie.seat, _fontSize, color: colorInfo),
                     ],
                   ),
                 ],
@@ -218,17 +230,6 @@ class _StreamingContentState extends State<StreamingContent> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildText(String text, double fontSize, {Color? color, FontWeight? fontWeight}) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: color ?? Colors.white,
-        fontSize: fontSize,
-        fontWeight: fontWeight,
       ),
     );
   }
