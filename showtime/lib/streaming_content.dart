@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:intl/intl.dart';
-
 import 'package:flutter/material.dart';
-import 'package:showtime/struct_class.dart';
-import 'package:showtime/utils.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:showtime/struct_class.dart';
+import 'package:showtime/utils.dart';
+import 'package:showtime/custom_navbar.dart';
 
 class StreamingContent extends StatefulWidget {
   final String videoId;
@@ -98,12 +99,12 @@ class _StreamingContentState extends State<StreamingContent> {
             String formattedTime = "$timeHour:$formattedMinute";
 
             movie = MovieMockupMetaData(
-              title: "Dune 2",
-              genre: "Sci-fi / Adventure",
-              seat: "A10",
+              title: r"Dune 2",
+              genre: r"Sci-fi / Adventure",
+              seat: r"A12",
               // theatreBranch: "Bangkok University",
-              theatreBranch: "Future Park Rungsit",
-              theatreNumber: randomNumber(1, 16),
+              theatreBranch: r"Future Park Rangsit",
+              theatreNumber: 6,
               duration: 166,
               date: formattedDate,
               time: formattedTime,
@@ -177,14 +178,14 @@ class _StreamingContentState extends State<StreamingContent> {
 
     // Calculate the percentage values for width, height, and padding
     final double containerWidth = screenWidth * 0.85; // 85% of screen width
-    final double containerHeight = screenHeight * 0.3; // 50% of screen height
+    final double containerHeight = screenHeight * 0.42; // 50% of screen height
     final EdgeInsets containerPadding = EdgeInsets.all(screenWidth * 0.05); // 5% of screen width as padding
 
     Color? colorInfo = Colors.grey.shade500 as Color?;
     return Positioned(
       top: screenHeight * 0.3,
       width: containerWidth,
-      // height: containerHeight,
+      height: containerHeight,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: Container(
@@ -209,11 +210,11 @@ class _StreamingContentState extends State<StreamingContent> {
                         _buildText("Date", _fontSize),
                         _buildText(movie.date, _fontSize, color: colorInfo),
                         _buildText("", _blankSpace),
-                        _buildText("Theatre Number", _fontSize),
+                        _buildText("Theatre", _fontSize),
                         _buildText(movie.theatreNumber.toString(), _fontSize, color: colorInfo),
                       ],
                     ),
-                    const SizedBox(width: 50.0),
+                    const SizedBox(width: 90.0),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -236,7 +237,7 @@ class _StreamingContentState extends State<StreamingContent> {
 
   Widget _buildAds() {
     return Positioned(
-      top: screenHeight * 0.72,
+      top: screenHeight * 0.74,
       child: SizedBox(
         width: screenWidth * 0.85,
         height: screenHeight * 0.10,
@@ -251,8 +252,8 @@ class _StreamingContentState extends State<StreamingContent> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _buildText("Ads", 16, color: Colors.greenAccent, fontWeight: FontWeight.bold),
-                  _buildText("This is an ad", 10),
+                  _buildText("Ads", 16, color: Colors.yellow, fontWeight: FontWeight.bold),
+                  _buildText("This is an ad", 12),
                 ],
               ),
             ),
@@ -260,6 +261,14 @@ class _StreamingContentState extends State<StreamingContent> {
         ),
       ),
     );
+  }
+
+  int _selectedIndex = 0;
+
+  void _onNavBarItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
@@ -283,6 +292,10 @@ class _StreamingContentState extends State<StreamingContent> {
               ],
             ),
           ),
+        ),
+        bottomNavigationBar: CustomNavBar(
+          initialIndex: _selectedIndex,
+          onItemSelected: _onNavBarItemTapped,
         ),
       ),
     );
