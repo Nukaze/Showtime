@@ -24,14 +24,20 @@ class _StreamingContentState extends State<StreamingContent> {
   late final dynamic _startTimeInSeconds;
   late final dynamic _endTimeInSeconds;
 
-  Size aspectRatio = Size(16, 9);
-  late String _videoTitle;
-  String _infoText = "Loading...";
+  Size aspectRatio = const Size(16, 9);
+  late String _movieTitle = "Loading...";
   late MetaDataResponse _metaData;
+
+  // Mock up metadata for testing
+  MovieMockupMetaData movie = MovieMockupMetaData();
 
   @override
   void initState() {
     super.initState();
+
+    setState(() {
+      movie.title = "Loading...";
+    });
 
     _controller = YoutubePlayerController(
       params: const YoutubePlayerParams(
@@ -67,16 +73,26 @@ class _StreamingContentState extends State<StreamingContent> {
       () => {
         setState(() async {
           _metaData = (await fetchYoutubeMetadata(widget.videoId))!;
-          _videoTitle = _metaData.items[0].snippet.title;
+          _movieTitle = _metaData.items[0].snippet.title;
           String channelName = _metaData.items[0].snippet.channelTitle;
-          if (_videoTitle.isEmpty) {
-            _videoTitle = "not available right now.";
+          if (_movieTitle.isEmpty) {
+            _movieTitle = "not available right now.";
           }
           if (channelName.isEmpty) {
             channelName = "not available right now.";
           }
+
           setState(() {
-            _infoText = "Title: $_videoTitle\nPublisher: $channelName";
+            movie = MovieMockupMetaData(
+              title: "Dune 2",
+              genre: "Sci-fi / Adventure",
+              seat: "A1",
+              theatreBranch: "Bangkok University",
+              theatreNumber: randomNumber(1, 16),
+              duration: 166,
+              date: DateTime.now().toString().split(" ")[0],
+              time: DateTime.now().toString().split(" ")[1],
+            );
           });
         })
       },
@@ -142,12 +158,28 @@ class _StreamingContentState extends State<StreamingContent> {
                   child: Container(
                     color: Colors.black.withOpacity(0.5), // Adding a background color for better visibility
                     padding: const EdgeInsets.all(16),
-                    child: Text(
-                      _infoText,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(movie.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        Text(movie.genre,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            )),
+                        Text(
+                          movie.theatreBranch,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
