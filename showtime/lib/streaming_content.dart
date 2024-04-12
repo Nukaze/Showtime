@@ -169,7 +169,6 @@ class _StreamingContentState extends State<StreamingContent> {
 
   Widget _buildMovieInfo() {
     const double _titleFontSize = 40.0;
-    const double _subTitleFontSize = 18.0;
     const double _fontSize = 16.0;
     const double _blankSpace = 10.0;
 
@@ -177,57 +176,86 @@ class _StreamingContentState extends State<StreamingContent> {
     screenHeight = MediaQuery.of(context).size.height;
 
     // Calculate the percentage values for width, height, and padding
-    final containerWidth = screenWidth * 0.85; // 85% of screen width
-    final containerHeight = screenHeight * 0.3; // 50% of screen height
-    final containerPadding = EdgeInsets.all(screenWidth * 0.05); // 5% of screen width as padding
+    final double containerWidth = screenWidth * 0.85; // 85% of screen width
+    final double containerHeight = screenHeight * 0.3; // 50% of screen height
+    final EdgeInsets containerPadding = EdgeInsets.all(screenWidth * 0.05); // 5% of screen width as padding
 
     Color? colorInfo = Colors.grey.shade500 as Color?;
     return Positioned(
       top: screenHeight * 0.3,
       width: containerWidth,
       // height: containerHeight,
-      child: Container(
-        color: Colors.black.withOpacity(0.5), // Adding a background color for better visibility
-        padding: const EdgeInsets.all(16),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildText("Now Streaming", _fontSize, color: Colors.greenAccent, fontWeight: FontWeight.bold),
-              _buildText(movie.title, _titleFontSize, fontWeight: FontWeight.bold),
-              _buildText(movie.genre, _fontSize, color: colorInfo),
-              const SizedBox(height: 30.0),
-              _buildText(movie.theatreBranch, _fontSize),
-              const SizedBox(height: 10.0),
-              // _buildDateAndTimeRow(movie.date, movie.time),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(40),
+        child: Container(
+          color: Colors.black.withOpacity(0.5),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(50, 30, 30, 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildText("Now Streaming", _fontSize, color: Colors.greenAccent, fontWeight: FontWeight.bold),
+                _buildText(movie.title, _titleFontSize, fontWeight: FontWeight.bold),
+                _buildText(movie.genre, _fontSize, color: colorInfo),
+                const SizedBox(height: 30.0),
+                _buildText(movie.theatreBranch, _fontSize),
+                const SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildText("Date", _fontSize),
+                        _buildText(movie.date, _fontSize, color: colorInfo),
+                        _buildText("", _blankSpace),
+                        _buildText("Theatre Number", _fontSize),
+                        _buildText(movie.theatreNumber.toString(), _fontSize, color: colorInfo),
+                      ],
+                    ),
+                    const SizedBox(width: 50.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildText("Time", _fontSize),
+                        _buildText(movie.time, _fontSize, color: colorInfo),
+                        _buildText("", _blankSpace),
+                        _buildText("Seat", _fontSize),
+                        _buildText(movie.seat, _fontSize, color: colorInfo),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAds() {
+    return Positioned(
+      top: screenHeight * 0.72,
+      child: SizedBox(
+        width: screenWidth * 0.85,
+        height: screenHeight * 0.10,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: Container(
+            alignment: Alignment.center,
+            color: Colors.black.withOpacity(0.5),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildText("Date", _fontSize),
-                      _buildText(movie.date, _fontSize, color: colorInfo),
-                      _buildText("", _blankSpace),
-                      _buildText("Theatre Number", _fontSize),
-                      _buildText(movie.theatreNumber.toString(), _fontSize, color: colorInfo),
-                    ],
-                  ),
-                  const SizedBox(width: 60.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildText("Time", _fontSize),
-                      _buildText(movie.time, _fontSize, color: colorInfo),
-                      _buildText("", _blankSpace),
-                      _buildText("Seat", _fontSize),
-                      _buildText(movie.seat, _fontSize, color: colorInfo),
-                    ],
-                  ),
+                  _buildText("Ads", 16, color: Colors.greenAccent, fontWeight: FontWeight.bold),
+                  _buildText("This is an ad", 10),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -251,6 +279,7 @@ class _StreamingContentState extends State<StreamingContent> {
               children: [
                 _buildYoutubePlayer(),
                 _buildMovieInfo(),
+                _buildAds(),
               ],
             ),
           ),
