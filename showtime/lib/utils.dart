@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:showtime/qr_scanner.dart';
 
 void alertDialog(BuildContext context, String title, String message,
     {String acceptText = "Ok", String cancelText = "Cancel", VoidCallback? onAccept, VoidCallback? onCancel}) {
@@ -35,4 +36,14 @@ int randomNumber(int? min, int? max) {
   }
 
   return min + rand.nextInt(max - min + 1);
+}
+
+void goBack(context) {
+  // Navigator.pop(context);
+  // Navigator.pushReplacement(
+  //   context,
+  //   MaterialPageRoute(
+  //     builder: (context) => QrScanner(),
+  //   ),
+  // );
 }
