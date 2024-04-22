@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:showtime/shopping_list.dart';
+
 import 'qr_scanner.dart';
 import 'splashscreen.dart';
 
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/SplashScreen': (context) => const SplashScreen(),
         '/QrScanner': (context) => const QrScanner(),
-        '/Shopping': (context) => Container(),
+        '/Shopping': (context) => const ShoppingList(),
         '/Profile': (context) => Container(),
       },
     );
