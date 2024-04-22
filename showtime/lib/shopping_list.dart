@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:showtime/products.dart';
 import 'package:showtime/utils.dart';
 
@@ -15,12 +17,10 @@ class _ShoppingListState extends State<ShoppingList> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 200), () {
-      alertDialog(context, "Shopping", "product list = $productList");
-    });
   }
 
   int _selectedIndex = 2;
+
   int _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index;
@@ -28,22 +28,76 @@ class _ShoppingListState extends State<ShoppingList> {
     return _selectedIndex;
   }
 
-  List<Product> productList = ProductList;
+  static List<String> prefactureList = ['Bangkok', 'Pathum Tani', 'Chiang Mai', 'Phuket', 'Pattaya'];
+  static Map<String, List<String>> majorCineplexBranches = {
+    'Bangkok': [
+      'Central World',
+      'Siam Paragon',
+      'Central Rama 9',
+      'Central Pinklao',
+      'Rachayothin',
+      'Central Ladprao',
+      'Central Bangna'
+    ],
+    'Pathum Tani': ['Future Park Rangsit', 'Major Rangsit'],
+    'Chiang Mai': ['Central Festival Chiang Mai', 'Maya Chiang Mai'],
+    'Phuket': ['Central Festival Phuket', 'Jungceylon'],
+    'Pattaya': ['Central Festival Pattaya', 'Harbor Mall Pattaya']
+  };
+  static List<String> eatList = ['Popcorn', 'Food', 'Drink', 'Snack'];
+
+  String selectedPrefecture = prefactureList[0];
+  String selectedBranch = majorCineplexBranches[prefactureList[0]]![0];
+  String selectedEat = eatList[0];
+
+  Widget _buildDropdown(
+    double _width,
+    double _height,
+    List<dynamic> contentList,
+    String selectedItem,
+    Function(String?) onDropdownChanged,
+  ) {
+    List<String> stringList = contentList.map((element) => element.toString()).toList();
+
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          width: _width * .8, // Set width
+          height: _height * .9, // Set height
+          child: DropdownButton<String>(
+            dropdownColor: Colors.black.withOpacity(0.6),
+            value: selectedItem,
+            items: stringList.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
+            }).toList(),
+            onChanged: onDropdownChanged,
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _buildProductList() {
+    List<Product> productList = ProductList;
+
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       itemCount: productList.length,
       itemBuilder: (context, index) {
         final prod = productList[index];
-        return Container(
+        return SizedBox(
           width: 50,
           height: 150,
           child: Card(
             color: Colors.white.withOpacity(0.5),
             child: ListTile(
-              leading:
-                  (prod.imageUrl.isEmpty) ? null : Image.asset(prod.imageUrl),
+              leading: (prod.imageUrl.isEmpty) ? null : Image.asset(prod.imageUrl),
               title: Text(prod.name),
               subtitle: Text("Price: ${prod.price} baht"),
               selectedColor: Colors.red,
@@ -51,8 +105,7 @@ class _ShoppingListState extends State<ShoppingList> {
               contentPadding: const EdgeInsets.all(12),
               minLeadingWidth: 0,
               onTap: () {
-                alertDialog(context, "Shopping",
-                    "You selected ${productList[index].name}\n${prod.price} baht");
+                alertDialog(context, "Shopping", "You selected ${productList[index].name}\n${prod.price} baht");
               },
             ),
           ),
@@ -72,11 +125,82 @@ class _ShoppingListState extends State<ShoppingList> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Container(
+          child: SizedBox.expand(
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
-                _buildProductList(),
+                Positioned(
+                  top: 20,
+                  left: 20,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Container(
+                      alignment: Alignment.center,
+                      color: Colors.black.withOpacity(0.5),
+                      width: 50,
+                      height: 50,
+                      child: BackButton(
+                        color: Colors.white,
+                        onPressed: () {
+                          goBack(context);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 20,
+                  right: 20,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Container(
+                      alignment: Alignment.center,
+                      color: Colors.black.withOpacity(0.5),
+                      width: 280,
+                      height: 50,
+                      child: _buildDropdown(
+                        280,
+                        50,
+                        prefactureList,
+                        selectedPrefecture,
+                        (String? newValue) {
+                          setState(() {
+                            selectedPrefecture = newValue!;
+                            selectedBranch = majorCineplexBranches[newValue]![0];
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 10,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.fromLTRB(10, 80, 10, 80),
+                      color: Colors.black.withOpacity(0.5),
+                      width: 350,
+                      height: 50,
+                      child: _buildDropdown(
+                        350,
+                        50,
+                        majorCineplexBranches[selectedPrefecture]!,
+                        selectedBranch,
+                        (String? newValue) {
+                          setState(() {
+                            selectedBranch = newValue!;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fromRect(
+                  rect: const Rect.fromLTWH(10, 150, 370, 570),
+                  child: _buildProductList(),
+                ),
               ],
             ),
           ),
