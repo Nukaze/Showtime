@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:showtime/qr_scanner.dart';
+import 'package:showtime/shopping_list.dart';
 import 'package:showtime/streaming_content.dart';
 import 'package:showtime/utils.dart';
 
@@ -29,14 +30,16 @@ class _CustomNavBarState extends State<CustomNavBar> {
   }
 
   void _onTap(int newIndex) {
-    if (newIndex == 1 && (Global().videoId == null || Global().videoId!.isEmpty)) {
+    if (newIndex == 1 &&
+        (Global().videoId == null || Global().videoId!.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           duration: const Duration(seconds: 8),
           dismissDirection: DismissDirection.vertical,
           behavior: SnackBarBehavior.floating,
           clipBehavior: Clip.antiAlias,
-          content: const Text('Video id not available. \nPlease scan a QR code before using this menu.'),
+          content: const Text(
+              'Video id not available. \nPlease scan a QR code before using this menu.'),
           backgroundColor: Colors.red.shade800,
           action: SnackBarAction(
             label: 'x',
@@ -70,8 +73,10 @@ class _CustomNavBarState extends State<CustomNavBar> {
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => const QrScanner(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const QrScanner(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
               return child; // No transition animation
             },
           ),
@@ -84,8 +89,10 @@ class _CustomNavBarState extends State<CustomNavBar> {
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => StreamingContent(videoId: Global().videoId!),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                StreamingContent(videoId: Global().videoId!),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
               return child; // No transition animation
             },
           ),
@@ -93,13 +100,18 @@ class _CustomNavBarState extends State<CustomNavBar> {
         break;
 
       case 2:
-        alertDialog(
+        Navigator.pop(context);
+        Navigator.pushReplacement(
           context,
-          'Shopping',
-          'This feature is not yet implemented.',
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const ShoppingList(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return child; // No transition animation
+            },
+          ),
         );
-        break;
-        Navigator.pushReplacementNamed(context, '/Shopping');
 
       case 3:
         alertDialog(
@@ -143,7 +155,12 @@ class _CustomNavBarState extends State<CustomNavBar> {
       unselectedIconTheme: const IconThemeData(color: Colors.blueGrey),
       showUnselectedLabels: true,
       // fixedColor is both of selectedItemColor, selectedIconTheme
-      fixedColor: [Colors.amber, Colors.red, Colors.teal.shade300, Colors.deepPurpleAccent][_currentIndex],
+      fixedColor: [
+        Colors.amber,
+        Colors.red,
+        Colors.teal.shade300,
+        Colors.deepPurpleAccent
+      ][_currentIndex],
       showSelectedLabels: true,
       backgroundColor: Colors.cyan,
       onTap: _onTap,
