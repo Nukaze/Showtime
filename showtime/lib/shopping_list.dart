@@ -236,6 +236,58 @@ class _ShoppingListState extends State<ShoppingList> {
                   ),
                 ),
                 Positioned(
+                  top: 150,
+                  left: 20,
+                  child: GestureDetector(
+                    onTap: () {
+                      alertDialog(context, "Out of Tissue",
+                          "Alert to staff \"Out of Tissue\"");
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Container(
+                        alignment: Alignment.center,
+                        color: Colors.brown.withOpacity(.8),
+                        width: 160,
+                        height: 50,
+                        child: const Text(
+                          "Out of Tissue",
+                          style: TextStyle(
+                            color: Colors.yellow,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 150,
+                  right: 20,
+                  child: GestureDetector(
+                    onTap: () {
+                      alertDialog(context, "Emergency Alert!!",
+                          "Alert to staff and staff will checking the situation.");
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Container(
+                        alignment: Alignment.center,
+                        color: Colors.red.withOpacity(.8),
+                        width: 170,
+                        height: 50,
+                        child: const Text("Emergency Alert",
+                            style: TextStyle(
+                              color: Colors.yellow,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            )),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
                   left: 15,
                   top: 85,
                   child: ClipRRect(
@@ -260,7 +312,7 @@ class _ShoppingListState extends State<ShoppingList> {
                   ),
                 ),
                 Positioned.fromRect(
-                  rect: const Rect.fromLTWH(10, 150, 370, 570),
+                  rect: const Rect.fromLTWH(10, 220, 370, 570),
                   child: _buildProductList(),
                 ),
               ],
