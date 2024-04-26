@@ -170,7 +170,13 @@ class _QrScannerState extends State<QrScanner> {
                 startScanner();
               });
             },
-            child: const Text('Scan QR Code'),
+            child: const Text(
+              'Scan QR Code',
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 16,
+              ),
+            ),
           );
   }
 
