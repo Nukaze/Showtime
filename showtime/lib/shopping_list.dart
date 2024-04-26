@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:showtime/products.dart';
+import 'package:showtime/qr_scanner.dart';
 import 'package:showtime/utils.dart';
 
 import 'custom_navbar.dart';
@@ -73,6 +75,13 @@ class _ShoppingListState extends State<ShoppingList> {
           child: DropdownButton<String>(
             dropdownColor: Colors.black.withOpacity(.9),
             value: selectedItem,
+            icon: const Icon(
+              Icons.arrow_drop_down,
+              color: Colors.black12,
+            ),
+            isExpanded: true,
+            iconSize: 24,
+            elevation: 16,
             items: stringList.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -102,48 +111,51 @@ class _ShoppingListState extends State<ShoppingList> {
       itemCount: productList.length,
       itemBuilder: (context, index) {
         final prod = productList[index];
-        return Card(
-          clipBehavior: Clip.antiAlias,
-          color: Colors.black.withOpacity(0.5),
-          child: InkWell(
-            onTap: () {
-              alertDialog(context, "Shopping",
-                  "You selected ${productList[index].name}\n${prod.price} baht");
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: (prod.imageUrl.isEmpty)
-                      ? const SizedBox(
-                          height: 80,
-                        )
-                      : Image.asset(
-                          prod.imageUrl,
-                          width: 100,
-                          fit: BoxFit.cover,
-                        ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        prod.name,
-                        style: const TextStyle(
-                          color: Colors.yellow,
-                        ),
-                      ),
-                      Text(
-                        "Price: ${prod.price} baht",
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ],
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Card(
+            clipBehavior: Clip.antiAlias,
+            color: Colors.black.withOpacity(0.5),
+            child: InkWell(
+              onTap: () {
+                alertDialog(context, "Shopping",
+                    "You selected ${productList[index].name}\n${prod.price} baht");
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: (prod.imageUrl.isEmpty)
+                        ? const SizedBox(
+                            height: 80,
+                          )
+                        : Image.asset(
+                            prod.imageUrl,
+                            width: 100,
+                            fit: BoxFit.cover,
+                          ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          prod.name,
+                          style: const TextStyle(
+                            color: Colors.yellow,
+                          ),
+                        ),
+                        Text(
+                          "Price: ${prod.price} baht",
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -179,7 +191,19 @@ class _ShoppingListState extends State<ShoppingList> {
                       child: BackButton(
                         color: Colors.white,
                         onPressed: () {
-                          goBack(context);
+                          // Navigator.pop(context);
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      const QrScanner(),
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                return child; // No transition animation
+                              },
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -212,12 +236,12 @@ class _ShoppingListState extends State<ShoppingList> {
                   ),
                 ),
                 Positioned(
-                  left: 10,
+                  left: 15,
+                  top: 85,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.fromLTRB(10, 80, 10, 80),
                       color: Colors.black.withOpacity(0.5),
                       width: 350,
                       height: 50,
