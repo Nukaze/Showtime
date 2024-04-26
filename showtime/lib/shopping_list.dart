@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:showtime/products.dart';
 import 'package:showtime/qr_scanner.dart';
 import 'package:showtime/utils.dart';
