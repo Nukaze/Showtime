@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:showtime/products.dart';
 import 'package:showtime/utils.dart';
@@ -91,35 +92,58 @@ class _ShoppingListState extends State<ShoppingList> {
   Widget _buildProductList() {
     List<Product> productList = ProductList;
 
-    return ListView.builder(
+    return GridView.builder(
       physics: const BouncingScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, // Two columns
+        crossAxisSpacing: 16.0, // Spacing between columns
+        mainAxisSpacing: 16.0, // Spacing between rows
+      ),
       itemCount: productList.length,
       itemBuilder: (context, index) {
         final prod = productList[index];
-        return SizedBox(
-          width: 50,
-          height: 150,
-          child: Card(
-            color: Colors.black.withOpacity(0.5),
-            child: ListTile(
-              leading:
-                  (prod.imageUrl.isEmpty) ? null : Image.asset(prod.imageUrl),
-              title: Text(prod.name,
-                  style: const TextStyle(
-                    color: Colors.yellow,
-                  )),
-              subtitle: Text(
-                "Price: ${prod.price} baht",
-                style: const TextStyle(color: Colors.white),
-              ),
-              selectedColor: Colors.red,
-              selectedTileColor: Colors.greenAccent.withOpacity(0.5),
-              contentPadding: const EdgeInsets.all(12),
-              minLeadingWidth: 0,
-              onTap: () {
-                alertDialog(context, "Shopping",
-                    "You selected ${productList[index].name}\n${prod.price} baht");
-              },
+        return Card(
+          clipBehavior: Clip.antiAlias,
+          color: Colors.black.withOpacity(0.5),
+          child: InkWell(
+            onTap: () {
+              alertDialog(context, "Shopping",
+                  "You selected ${productList[index].name}\n${prod.price} baht");
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: (prod.imageUrl.isEmpty)
+                      ? const SizedBox(
+                          height: 80,
+                        )
+                      : Image.asset(
+                          prod.imageUrl,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        prod.name,
+                        style: const TextStyle(
+                          color: Colors.yellow,
+                        ),
+                      ),
+                      Text(
+                        "Price: ${prod.price} baht",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
