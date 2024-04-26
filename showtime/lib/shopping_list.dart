@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:showtime/products.dart';
 import 'package:showtime/utils.dart';
 
@@ -28,7 +26,13 @@ class _ShoppingListState extends State<ShoppingList> {
     return _selectedIndex;
   }
 
-  static List<String> prefactureList = ['Bangkok', 'Pathum Tani', 'Chiang Mai', 'Phuket', 'Pattaya'];
+  static List<String> prefactureList = [
+    'Bangkok',
+    'Pathum Tani',
+    'Chiang Mai',
+    'Phuket',
+    'Pattaya'
+  ];
   static Map<String, List<String>> majorCineplexBranches = {
     'Bangkok': [
       'Central World',
@@ -57,7 +61,8 @@ class _ShoppingListState extends State<ShoppingList> {
     String selectedItem,
     Function(String?) onDropdownChanged,
   ) {
-    List<String> stringList = contentList.map((element) => element.toString()).toList();
+    List<String> stringList =
+        contentList.map((element) => element.toString()).toList();
 
     return Column(
       children: <Widget>[
@@ -65,7 +70,7 @@ class _ShoppingListState extends State<ShoppingList> {
           width: _width * .8, // Set width
           height: _height * .9, // Set height
           child: DropdownButton<String>(
-            dropdownColor: Colors.black.withOpacity(0.6),
+            dropdownColor: Colors.black.withOpacity(.9),
             value: selectedItem,
             items: stringList.map((String value) {
               return DropdownMenuItem<String>(
@@ -95,17 +100,25 @@ class _ShoppingListState extends State<ShoppingList> {
           width: 50,
           height: 150,
           child: Card(
-            color: Colors.white.withOpacity(0.5),
+            color: Colors.black.withOpacity(0.5),
             child: ListTile(
-              leading: (prod.imageUrl.isEmpty) ? null : Image.asset(prod.imageUrl),
-              title: Text(prod.name),
-              subtitle: Text("Price: ${prod.price} baht"),
+              leading:
+                  (prod.imageUrl.isEmpty) ? null : Image.asset(prod.imageUrl),
+              title: Text(prod.name,
+                  style: const TextStyle(
+                    color: Colors.yellow,
+                  )),
+              subtitle: Text(
+                "Price: ${prod.price} baht",
+                style: const TextStyle(color: Colors.white),
+              ),
               selectedColor: Colors.red,
               selectedTileColor: Colors.greenAccent.withOpacity(0.5),
               contentPadding: const EdgeInsets.all(12),
               minLeadingWidth: 0,
               onTap: () {
-                alertDialog(context, "Shopping", "You selected ${productList[index].name}\n${prod.price} baht");
+                alertDialog(context, "Shopping",
+                    "You selected ${productList[index].name}\n${prod.price} baht");
               },
             ),
           ),
@@ -166,7 +179,8 @@ class _ShoppingListState extends State<ShoppingList> {
                         (String? newValue) {
                           setState(() {
                             selectedPrefecture = newValue!;
-                            selectedBranch = majorCineplexBranches[newValue]![0];
+                            selectedBranch =
+                                majorCineplexBranches[newValue]![0];
                           });
                         },
                       ),
