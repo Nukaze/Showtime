@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:showtime/custom_navbar.dart';
@@ -11,6 +12,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String userImage = 'assets/images/sensei.png';
+
   String username = 'Blue Sensei';
   String email = 'sensei@bluearchive.com';
   String password = 'password123';
@@ -38,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
     const usernameColor = Colors.cyan;
     const infoColor = Colors.white70;
     final dimBackgroundColor = Colors.black.withOpacity(0.5);
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -59,9 +63,26 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: screenHeight * 0.15),
-                    const CircleAvatar(
-                      radius: 70,
-                      backgroundImage: AssetImage('assets/images/sensei.png'),
+                    GestureDetector(
+                      onDoubleTap: () {
+                        String prevImage = userImage;
+                        setState(() {
+                          username = (username == 'Blue Sensei')
+                              ? 'Real Sensei'
+                              : 'Blue Sensei';
+                          prevImage = userImage;
+                          userImage = (userImage == 'assets/images/sensei.png')
+                              ? 'assets/images/sensei_real.png'
+                              : 'assets/images/sensei.png';
+                        });
+                        debugPrint(
+                            '\nnow [$prevImage] changed to: [$userImage]\n');
+                      },
+                      child: CircleAvatar(
+                        radius: 70,
+                        key: UniqueKey(),
+                        backgroundImage: AssetImage(userImage),
+                      ),
                     ),
                     SizedBox(height: screenHeight * 0.03),
                     Text(
