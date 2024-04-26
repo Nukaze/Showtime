@@ -67,7 +67,8 @@ class _QrScannerState extends State<QrScanner> {
       isDetected = true;
       Global().videoId = videoId;
     });
-    debugPrint("\n\n\n\nScanned code: ${barcode.raw}\nEnd of scan detected\n\n\n\n");
+    debugPrint(
+        "\n\n\n\nScanned code: ${barcode.raw}\nEnd of scan detected\n\n\n\n");
 
     return alertDialog(
       context,
@@ -92,7 +93,8 @@ class _QrScannerState extends State<QrScanner> {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => StreamingContent(videoId: videoId),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            StreamingContent(videoId: videoId),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return child; // No transition animation
         },
@@ -114,9 +116,11 @@ class _QrScannerState extends State<QrScanner> {
     }
     if (_isCameraActive) {
       camController.start();
-      _scanTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+      _scanTimer =
+          Timer.periodic(const Duration(milliseconds: 500), (timer) async {
         try {
-          Barcode barcode = (await camController.analyzeImage(BarcodeFormat.qrCode as String)) as Barcode;
+          Barcode barcode = (await camController
+              .analyzeImage(BarcodeFormat.qrCode as String)) as Barcode;
 
           if (barcode.rawValue != null) {
             setState(() {
@@ -170,6 +174,47 @@ class _QrScannerState extends State<QrScanner> {
           );
   }
 
+  Widget _buildHorizontalMoviesPoster() {
+    List<String> moviePosters = [
+      'assets/images/poster_dune2.jpg',
+      'assets/images/poster_aprilcome.jpg',
+      'assets/images/poster_civilwar.jpg',
+      'assets/images/poster_exhuma.jpg',
+      'assets/images/poster_gxk.jpg',
+    ];
+
+    List<String> movieTitles = [
+      'Dune 2',
+      'April Come She Will',
+      'Civil War',
+      'Exhuma',
+      'GXK',
+    ];
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 600,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: moviePosters.length,
+        itemBuilder: (context, index) {
+          return Container(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              // Adjust the border radius as needed
+              child: Image.asset(
+                moviePosters[index],
+                width: 350,
+                fit: BoxFit.fill,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   int _selectedIndex = 0;
 
   void _onItemSelected(int index) {
@@ -193,13 +238,17 @@ class _QrScannerState extends State<QrScanner> {
             child: Stack(
               alignment: Alignment.center,
               children: [
+                Positioned(
+                  top: 30,
+                  child: _buildHorizontalMoviesPoster(),
+                ),
                 MobileScanner(
                   controller: camController,
                   onDetect: onDetected,
                   fit: BoxFit.cover,
                 ),
                 Positioned(
-                  bottom: 30, // Adjust spacing from bottom
+                  bottom: 25, // Adjust spacing from bottom
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -209,8 +258,12 @@ class _QrScannerState extends State<QrScanner> {
                         visible: _isCameraActive,
                         child: FloatingActionButton(
                           onPressed: toggleFlashlight,
-                          backgroundColor: (_isFlashlightActive) ? (Colors.tealAccent) : (Colors.grey),
-                          child: Icon(_isFlashlightActive ? Icons.flashlight_on : Icons.flashlight_off),
+                          backgroundColor: (_isFlashlightActive)
+                              ? (Colors.tealAccent)
+                              : (Colors.grey),
+                          child: Icon(_isFlashlightActive
+                              ? Icons.flashlight_on
+                              : Icons.flashlight_off),
                         ),
                       ),
                     ],
