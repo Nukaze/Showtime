@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:showtime/profile_page.dart';
 import 'package:showtime/qr_scanner.dart';
 import 'package:showtime/shopping_list.dart';
 import 'package:showtime/streaming_content.dart';
@@ -69,7 +70,6 @@ class _CustomNavBarState extends State<CustomNavBar> {
           'QR Code Scanner',
           'Go to Scanner.',
         );
-        Navigator.pop(context);
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
@@ -81,11 +81,9 @@ class _CustomNavBarState extends State<CustomNavBar> {
             },
           ),
         );
-
         break;
 
       case 1:
-        Navigator.pop(context);
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
@@ -100,7 +98,6 @@ class _CustomNavBarState extends State<CustomNavBar> {
         break;
 
       case 2:
-        Navigator.pop(context);
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
@@ -112,15 +109,21 @@ class _CustomNavBarState extends State<CustomNavBar> {
             },
           ),
         );
+        break;
 
       case 3:
-        alertDialog(
+        Navigator.pushReplacement(
           context,
-          'Profile',
-          'This feature is not yet implemented.',
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const ProfilePage(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return child; // No transition animation
+            },
+          ),
         );
         break;
-        Navigator.pushReplacementNamed(context, '/Profile');
     }
   }
 
