@@ -162,7 +162,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
         Colors.deepPurpleAccent
       ][_currentIndex],
       showSelectedLabels: true,
-      backgroundColor: Colors.cyan,
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.black,
       onTap: _onTap,
     );
   }
