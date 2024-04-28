@@ -254,7 +254,7 @@ class _QrScannerState extends State<QrScanner> {
                   fit: BoxFit.cover,
                 ),
                 Positioned(
-                  bottom: 25, // Adjust spacing from bottom
+                  bottom: 35, // Adjust spacing from bottom
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
