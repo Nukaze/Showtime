@@ -45,14 +45,19 @@ class _QrScannerState extends State<QrScanner> {
     if (_isFlashlightActive) {
       toggleFlashlight();
     }
-    stopScanner();
+    try {
+      stopScanner();
+    } on Exception catch (e) {
+      debugPrint("Error stopping scanner: $e");
+    }
+
     super.dispose();
   }
 
   void onDetected(BarcodeCapture barcode) {
     if (barcode.raw == null) {
       alertDialog(context, "QR Detected", "Invalid QR code");
-      debugPrint("\n\n\n\ invalid qrcode \n\n\n\n");
+      debugPrint("\n\n\n invalid qrcode \n\n\n\n");
       return;
     }
     if (isDetected) {
@@ -77,12 +82,6 @@ class _QrScannerState extends State<QrScanner> {
       "Watch $videoName from Major Cineplex?",
       acceptText: "Watch $videoName",
       onAccept: () => goToStreamingContent(videoId),
-      onCancel: () {
-        setState(() {
-          isDetected = false;
-        });
-        return;
-      },
     );
   }
 
